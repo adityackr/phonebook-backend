@@ -37,11 +37,27 @@ app.get('/api/persons', (req, res) => {
 app.post('/api/persons', (req, res) => {
 	const body = req.body;
 
+	if (persons.map((p) => p.name).includes(body.name)) {
+		return res.status(400).json({
+			error: 'name already exists',
+		});
+	} else if (persons.map((p) => p.number).includes(body.number)) {
+		return res.status(400).json({
+			error: 'number already exists',
+		});
+	} else if (!body.name || !body.number) {
+		return res.status(400).json({
+			error: 'name or number missing',
+		});
+	}
+
 	const person = {
 		id: generateId(),
 		name: body.name,
 		number: body.number,
 	};
+
+	persons = [...persons, person];
 
 	res.json(person);
 });
